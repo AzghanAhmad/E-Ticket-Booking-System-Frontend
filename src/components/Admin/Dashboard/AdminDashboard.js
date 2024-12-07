@@ -1,15 +1,114 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { FaBus, FaRoute, FaUserTie, FaRegMoneyBillAlt, FaUsers, FaUserShield } from "react-icons/fa";
+import axios from "axios";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
+    const [stats, setStats] = useState({
+        totalBuses: 0,
+        busesOnRoute: 0,
+        totalDrivers: 0,
+        pendingRefunds: 0,
+        totalAdmins: 0,
+        totalUsers: 0,
+    });
+
+    useEffect(() => {
+        // Fetch statistics from your API or backend
+        const fetchStats = async () => {
+            try {
+                const response = await axios.get("http://localhost:5000/api/stats", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+                setStats(response.data);
+            } catch (error) {
+                console.error("Error fetching statistics:", error);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
     return (
         <div className="home-container">
             <h1 className="dashboard-title">Admin Dashboard</h1>
+            <h1 className="stats-title">Stats Corner</h1>
+            {/* Statistics Overview Section with Animation */}
+            <motion.div
+                className="stats-overview"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6 }}
+            >
+                <motion.div
+                    className="stat-card buses"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <FaBus className="stat-icon" />
+                    <h2>Total Buses</h2>
+                    <p>{stats.totalBuses}</p>
+                </motion.div>
+
+                <motion.div
+                    className="stat-card buses-on-route"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <FaRoute className="stat-icon" />
+                    <h2>Buses on Route</h2>
+                    <p>{stats.busesOnRoute}</p>
+                </motion.div>
+
+                <motion.div
+                    className="stat-card drivers"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <FaUserTie className="stat-icon" />
+                    <h2>Total Drivers</h2>
+                    <p>{stats.totalDrivers}</p>
+                </motion.div>
+
+                <motion.div
+                    className="stat-card refunds"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <FaRegMoneyBillAlt className="stat-icon" />
+                    <h2>Pending Refunds</h2>
+                    <p>{stats.pendingRefunds}</p>
+                </motion.div>
+
+                <motion.div
+                    className="stat-card admins"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <FaUserShield className="stat-icon" />
+                    <h2>Total Admins</h2>
+                    <p>{stats.totalAdmins}</p>
+                </motion.div>
+
+                <motion.div
+                    className="stat-card users"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <FaUsers className="stat-icon" />
+                    <h2>Total Registered Users</h2>
+                    <p>{stats.totalUsers}</p>
+                </motion.div>
+            </motion.div>
 
             {/* Background Image Section */}
             <div className="home-header"></div>
+            <h1 className="dashboard-title">Admin Features</h1>
             <motion.div
                 className="admin-dashboard"
                 initial={{ opacity: 0 }}
@@ -32,9 +131,6 @@ const AdminDashboard = () => {
                             </Link>
                             <Link to="/admin/accounts/add" className="dashboard-button">
                                 Add New Admin
-                            </Link>
-                            <Link to="/admin/accounts/edit/1" className="dashboard-button">
-                                Edit Admin
                             </Link>
                         </div>
                     </motion.div>

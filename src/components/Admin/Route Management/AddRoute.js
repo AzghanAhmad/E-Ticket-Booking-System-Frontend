@@ -1,34 +1,55 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./AddRoute.css";
 
 const AddRoute = ({ routes, setRoutes }) => {
-    const [formData, setFormData] = useState({ routeName: "", origin: "", destination: "" });
+    const [formData, setFormData] = useState({ start: "", end: "", stops: "", distance: "", estimatedDuration: "" });
     const navigate = useNavigate();
 
+    // Handle form field changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.routeName || !formData.origin || !formData.destination) {
-            alert("All fields are required!");
+
+        const { start, end, stops, distance, estimatedDuration } = formData;
+
+        if (!start || !end || !distance || !estimatedDuration) {
+            alert("All fields except stops are required!");
             return;
         }
 
-        const newRoute = { 
-            id: routes.length + 1,  // Simple way to generate a new ID
-            routeName: formData.routeName, 
-            origin: formData.origin, 
-            destination: formData.destination 
+        // Prepare data for submission
+        const newRoute = {
+            start,
+            end,
+            stops: stops ? stops.split("\n").map((stop) => stop.trim()) : [], // Convert stops back to an array
+            distance,
+            estimatedDuration,
         };
-        
-        setRoutes([...routes, newRoute]); // Add the new route to the list
-        alert("Route added successfully!");
-        navigate("/admin/routes");
+
+        try {
+            // Send a POST request to add the new route
+            const response = await axios.post("http://localhost:5000/api/routes", newRoute, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Add authorization header
+                },
+            });
+
+            // Update the routes state with the new route added
+            setRoutes([...routes, response.data]);
+            alert("Route added successfully!");
+            navigate("/admin/routes");
+        } catch (err) {
+            console.error("Error adding route:", err);
+            alert("Failed to add route.");
+        }
     };
 
     return (
@@ -45,25 +66,40 @@ const AddRoute = ({ routes, setRoutes }) => {
                 <form onSubmit={handleSubmit} className="route-form">
                     <input
                         type="text"
-                        name="routeName"
-                        placeholder="Route Name"
-                        value={formData.routeName}
+                        name="start"
+                        placeholder="Start Location"
+                        value={formData.start}
                         onChange={handleInputChange}
                         required
                     />
                     <input
                         type="text"
-                        name="origin"
-                        placeholder="Origin"
-                        value={formData.origin}
+                        name="end"
+                        placeholder="End Location"
+                        value={formData.end}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <textarea
+                        name="stops"
+                        placeholder="Stops (one per line)"
+                        value={formData.stops}
+                        onChange={handleInputChange}
+                        rows="4"
+                    />
+                    <input
+                        type="number"
+                        name="distance"
+                        placeholder="Distance (km)"
+                        value={formData.distance}
                         onChange={handleInputChange}
                         required
                     />
                     <input
                         type="text"
-                        name="destination"
-                        placeholder="Destination"
-                        value={formData.destination}
+                        name="estimatedDuration"
+                        placeholder="Estimated Duration"
+                        value={formData.estimatedDuration}
                         onChange={handleInputChange}
                         required
                     />

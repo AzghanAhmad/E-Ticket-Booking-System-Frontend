@@ -7,31 +7,57 @@ import "./RouteList.css";
 const RouteList = ({ routes, setRoutes }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1); // Track current page
+    const [routesPerPage] = useState(10); // Number of routes to display per page
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchRoutes = async () => {
-            if (!routes || routes.length === 0) {
-                setLoading(true);
-                setError(null);
-                try {
-                    const response = await axios.get("http://localhost:5000/api/routes");
-                    setRoutes(response.data);
-                } catch (err) {
-                    console.error("Error fetching routes:", err);
-                    setError("Failed to fetch routes. Please try again later.");
-                } finally {
-                    setLoading(false);
-                }
-            }
-        };
+    // Function to verify if the token exists in localStorage
+    const verifyToken = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You need to log in first!");
+            navigate("/login");
+            return false;
+        }
+        return true;
+    };
 
-        fetchRoutes();
-    }, [routes, setRoutes]);
+    useEffect(() => {
+        if (verifyToken()) {
+            const fetchRoutes = async () => {
+                if (!routes || routes.length === 0) {
+                    setLoading(true);
+                    setError(null);
+                    try {
+                        const response = await axios.get("http://localhost:5000/api/routes", {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                            },
+                        });
+                        setRoutes(response.data);
+                    } catch (err) {
+                        console.error("Error fetching routes:", err);
+                        setError("Failed to fetch routes. Please try again later.");
+                    } finally {
+                        setLoading(false);
+                    }
+                }
+            };
+
+            fetchRoutes();
+        }
+    }, [routes, setRoutes, navigate]);
 
     const deleteRoute = async (id) => {
+        if (!verifyToken()) { 
+            return; // Verify token before deleting
+        }
         try {
-            await axios.delete(`http://localhost:5000/api/routes/${id}`);
+            await axios.delete(`http://localhost:5000/api/routes/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
             setRoutes(routes.filter((route) => route._id !== id));
         } catch (err) {
             console.error("Error deleting route:", err);
@@ -49,6 +75,14 @@ const RouteList = ({ routes, setRoutes }) => {
     if (error) {
         return <p className="error-message">{error}</p>;
     }
+
+    // Calculate the routes to be displayed on the current page
+    const indexOfLastRoute = currentPage * routesPerPage;
+    const indexOfFirstRoute = indexOfLastRoute - routesPerPage;
+    const currentRoutes = routes.slice(indexOfFirstRoute, indexOfLastRoute);
+
+    // Handle page change
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <div className="home-container">
@@ -71,7 +105,7 @@ const RouteList = ({ routes, setRoutes }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {routes.map((route) => (
+                            {currentRoutes.map((route) => (
                                 <tr key={route._id}>
                                     <td>{route.start}</td>
                                     <td>{route.end}</td>
@@ -107,6 +141,19 @@ const RouteList = ({ routes, setRoutes }) => {
                 >
                     Add New Route
                 </motion.button>
+
+                {/* Pagination Controls */}
+                <div className="pagination">
+                    {Array.from({ length: Math.ceil(routes.length / routesPerPage) }).map((_, index) => (
+                        <button
+                            key={index + 1}
+                            className={`page-button ${currentPage === index + 1 ? "active" : ""}`}
+                            onClick={() => paginate(index + 1)}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                </div>
             </div>
         </div>
     );

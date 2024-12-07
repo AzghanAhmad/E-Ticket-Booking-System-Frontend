@@ -1,28 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
 import "./EditSchedule.css";
 
 const EditSchedule = ({ schedules, setSchedules }) => {
     const { id } = useParams();
     const [formData, setFormData] = useState({
-        routeName: "",
         departureTime: "",
         arrivalTime: "",
+        status: "",
+        route: "",
+        bus: "",
     });
+    const [busList, setBusList] = useState([]); // State to store available buses
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const scheduleToEdit = schedules.find((schedule) => schedule.id === parseInt(id));
+        // Fetch the selected schedule
+        const scheduleToEdit = schedules.find((schedule) => schedule._id === id);
         if (scheduleToEdit) {
             setFormData({
-                routeName: scheduleToEdit.routeName,
-                departureTime: scheduleToEdit.departureTime,
-                arrivalTime: scheduleToEdit.arrivalTime,
+                departureTime: new Date(scheduleToEdit.departureTime).toISOString().slice(0, 16),
+                arrivalTime: new Date(scheduleToEdit.arrivalTime).toISOString().slice(0, 16),
+                status: scheduleToEdit.status,
+                route: scheduleToEdit.route
+                    ? `${scheduleToEdit.route.start} to ${scheduleToEdit.route.end}`
+                    : "",
+                bus: scheduleToEdit.bus ? scheduleToEdit.bus.licensePlate : "",
             });
         } else {
             navigate("/admin/schedules");
         }
+
+        // Fetch available buses
+        const fetchBuses = async () => {
+            try {
+                const response = await axios.get("http://localhost:5000/api/buses");
+                setBusList(response.data.buses); // Assuming the response contains a 'buses' array
+            } catch (err) {
+                console.error("Error fetching buses:", err);
+                setError("Failed to fetch available buses. Please try again later.");
+            }
+        };
+
+        fetchBuses();
     }, [id, schedules, navigate]);
 
     const handleInputChange = (e) => {
@@ -30,21 +53,39 @@ const EditSchedule = ({ schedules, setSchedules }) => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.routeName || !formData.departureTime || !formData.arrivalTime) {
+
+        if (!formData.departureTime || !formData.arrivalTime || !formData.status || !formData.route || !formData.bus) {
             alert("All fields are required!");
             return;
         }
 
-        const updatedSchedule = { ...formData, id: parseInt(id) };
-        setSchedules((prevSchedules) =>
-            prevSchedules.map((schedule) =>
-                schedule.id === parseInt(id) ? updatedSchedule : schedule
-            )
-        );
-        alert("Schedule updated successfully!");
-        navigate("/admin/schedules");
+        try {
+            const [start, end] = formData.route.split(" to ");
+
+            const updatedSchedule = {
+                departureTime: new Date(formData.departureTime).toISOString(),
+                arrivalTime: new Date(formData.arrivalTime).toISOString(),
+                status: formData.status,
+                route: { start, end },
+                bus: { licensePlate: formData.bus },
+            };
+
+            await axios.put(`http://localhost:5000/api/schedules/${id}`, updatedSchedule);
+
+            setSchedules((prevSchedules) =>
+                prevSchedules.map((schedule) =>
+                    schedule._id === id ? { ...schedule, ...updatedSchedule } : schedule
+                )
+            );
+
+            alert("Schedule updated successfully!");
+            navigate("/admin/schedules");
+        } catch (err) {
+            console.error("Error updating schedule:", err);
+            setError("Failed to update schedule. Please try again later.");
+        }
     };
 
     return (
@@ -58,18 +99,11 @@ const EditSchedule = ({ schedules, setSchedules }) => {
                 transition={{ duration: 0.5 }}
             >
                 <h1 className="form-title">Edit Schedule</h1>
+                {error && <p className="error-message">{error}</p>}
                 <form onSubmit={handleSubmit} className="schedule-form">
-                    <label>Route Name</label>
-                    <input
-                        type="text"
-                        name="routeName"
-                        value={formData.routeName}
-                        onChange={handleInputChange}
-                        required
-                    />
                     <label>Departure Time</label>
                     <input
-                        type="time"
+                        type="datetime-local"
                         name="departureTime"
                         value={formData.departureTime}
                         onChange={handleInputChange}
@@ -77,12 +111,45 @@ const EditSchedule = ({ schedules, setSchedules }) => {
                     />
                     <label>Arrival Time</label>
                     <input
-                        type="time"
+                        type="datetime-local"
                         name="arrivalTime"
                         value={formData.arrivalTime}
                         onChange={handleInputChange}
                         required
                     />
+                    <label>Status</label>
+                    <input
+                        type="text"
+                        name="status"
+                        value={formData.status}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <label>Route</label>
+                    <input
+                        type="text"
+                        name="route"
+                        value={formData.route}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g., City A to City B"
+                    />
+                    <label>Bus License</label>
+                    <select
+                        name="bus"
+                        value={formData.bus}
+                        onChange={handleInputChange}
+                        required
+                    >
+                        <option value="" disabled>
+                            Select Bus License
+                        </option>
+                        {busList.map((bus) => (
+                            <option key={bus._id} value={bus.licensePlate}>
+                                {bus.licensePlate}
+                            </option>
+                        ))}
+                    </select>
                     <motion.button
                         type="submit"
                         className="submit-button"

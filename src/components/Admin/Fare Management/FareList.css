@@ -50,7 +50,7 @@ body {
     border-collapse: collapse;
     background-color: #fff;
     border-radius: 8px;
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
 }
@@ -66,6 +66,32 @@ body {
     background-color: #f4f4f4;
     font-weight: bold;
 }
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-button {
+    padding: 10px;
+    margin: 0 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.page-button.active {
+    background-color: #00bcd4;
+    color: white;
+}
+
+.page-button:hover {
+    background-color: #ddd;
+}
+
 
 .edit-button,
 .delete-button {
@@ -194,7 +220,15 @@ body {
         padding: 10px;
     }
 
-    .fare-table th, .fare-table td {
+    .fare-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap; /* Enables horizontal scrolling */
+    }
+
+    .fare-table th,
+    .fare-table td {
+        padding: 10px;
         font-size: 14px;
     }
 }
@@ -211,10 +245,18 @@ body {
     .list-title, .fare-form-title {
         font-size: 1.2rem;
     }
-
-    .fare-table th, .fare-table td {
-        padding: 2px;
+    .fare-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap; /* Enables horizontal scrolling */
     }
+
+    .fare-table th,
+    .fare-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
 
     .edit-button, .delete-button {
         padding: 7px;

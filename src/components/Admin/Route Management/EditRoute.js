@@ -5,6 +5,8 @@ import axios from "axios";
 import "./EditRoute.css";
 
 const EditRoute = ({ routes, setRoutes }) => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const { id } = useParams(); // Note: id is now _id as used in the RouteList
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -15,29 +17,50 @@ const EditRoute = ({ routes, setRoutes }) => {
         estimatedDuration: "",
     });
 
+    // Function to verify if the token exists in localStorage
+    const verifyToken = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You need to log in first!");
+            navigate("/login");
+            return false;
+        }
+        return true;
+    };
+
     useEffect(() => {
-        const fetchRoute = async () => {
-            try {
-                const routeToEdit = await axios.get(`http://localhost:5000/api/routes/${id}`);
-                if (routeToEdit.data) {
-                    // Convert stops array to comma-separated string for easy editing
-                    const updatedData = {
-                        ...routeToEdit.data,
-                        stops: routeToEdit.data.stops ? routeToEdit.data.stops.join(", ") : "",
-                    };
-                    setFormData(updatedData);
-                } else {
-                    alert("Route not found!");
+        if (verifyToken()) {
+            const fetchRoute = async () => {
+                if (!routes || routes.length === 0) {
+                    setLoading(true);
+                    setError(null);
+                try {
+                    const routeToEdit = await axios.get(`http://localhost:5000/api/routes/${id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    });
+                    console.log(routeToEdit.data);
+                    if (routeToEdit.data) {
+                        // Convert stops array to comma-separated string for easy editing
+                        const updatedData = {
+                            ...routeToEdit.data,
+                        };
+                        setFormData(updatedData);
+                    } else {
+                        alert("Route not found!");
+                        navigate("/admin/routes");
+                    }
+                } catch (err) {
+                    console.error("Error fetching route:", err);
+                    alert("Failed to fetch route details.");
                     navigate("/admin/routes");
                 }
-            } catch (err) {
-                console.error("Error fetching route:", err);
-                alert("Failed to fetch route details.");
-                navigate("/admin/routes");
             }
-        };
+            };
 
-        fetchRoute();
+            fetchRoute();
+        }
     }, [id, navigate]);
 
     const handleInputChange = (e) => {
@@ -47,6 +70,8 @@ const EditRoute = ({ routes, setRoutes }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!verifyToken()) return; // Check token before submitting
+
         const { start, end, stops, distance, estimatedDuration } = formData;
 
         if (!start || !end || !distance || !estimatedDuration) {
@@ -57,13 +82,17 @@ const EditRoute = ({ routes, setRoutes }) => {
         const updatedRoute = {
             start,
             end,
-            stops: stops ? stops.split(",").map((stop) => stop.trim()) : [], // Convert stops back to an array
+            stops: stops ? stops.split("\n").map((stop) => stop.trim()) : [], // Convert stops back to an array
             distance,
             estimatedDuration,
         };
 
         try {
-            await axios.put(`http://localhost:5000/api/routes/${id}`, updatedRoute);
+            await axios.put(`http://localhost:5000/api/routes/${id}`, updatedRoute, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
             setRoutes((prevRoutes) =>
                 prevRoutes.map((route) =>
                     route._id === id ? { ...route, ...updatedRoute } : route
@@ -88,6 +117,8 @@ const EditRoute = ({ routes, setRoutes }) => {
                 transition={{ duration: 0.5 }}
             >
                 <h1 className="form-title">Edit Route</h1>
+                {/* Add a header above all the fields */}
+                <h2 className="form-header">Please update the route details below:</h2>
                 <form onSubmit={handleSubmit} className="route-form">
                     <input
                         type="text"
@@ -105,12 +136,13 @@ const EditRoute = ({ routes, setRoutes }) => {
                         onChange={handleInputChange}
                         required
                     />
-                    <input
-                        type="text"
+                    {/* Separate stops input without commas */}
+                    <textarea
                         name="stops"
-                        placeholder="Stops (comma-separated)"
+                        placeholder="Stops (one per line)"
                         value={formData.stops}
                         onChange={handleInputChange}
+                        rows="4"
                     />
                     <input
                         type="number"
