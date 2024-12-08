@@ -224,6 +224,38 @@ const AdminDashboard = () => {
                             </Link>
                         </div>
                     </motion.div>
+                    {/* Refund Management Card */}
+                    <motion.div
+                        className="dashboard-card"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <h2>Manage Refunds</h2>
+                        <p>View and manage all refunds.</p>
+                        <div className="dashboard-buttons">
+                            <Link to="/admin/refunds" className="dashboard-button">
+                                View Refunds
+                            </Link>
+                        </div>
+                    </motion.div>
+
+                    {/* Booking Management Card */}
+                    <motion.div
+                        className="dashboard-card"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <h2>Manage Bookings</h2>
+                        <p>View and manage all bookings.</p>
+                        <div className="dashboard-buttons">
+                            <Link to="/admin/bookings" className="dashboard-button">
+                                View Bookings
+                            </Link>
+                        </div>
+                    </motion.div>
+
+                    
+
                 </div>
             </motion.div>
         </div>

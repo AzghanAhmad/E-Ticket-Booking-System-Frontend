@@ -1,37 +1,73 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
-import "./EditAdmin.css";
+import axios from "axios"; // Import Axios for HTTP requests
+import "./EditAccount.css";
 
-const EditAdmin = ({ admins, setAdmins }) => {
-    const [formData, setFormData] = useState({ name: "", email: "", role: "", status: "" });
+const EditAccount = ({ admins, setAdmins }) => {
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        role: "",
+    });
     const { id } = useParams();
     const navigate = useNavigate();
 
+    // Load admin data for editing
     useEffect(() => {
         if (id) {
-            const adminToEdit = admins.find((admin) => admin.id === parseInt(id));
-            setFormData(adminToEdit || { name: "", email: "", role: "", status: "" });
+            const adminToEdit = admins.find((admin) => admin._id === id); // Match by _id
+            setFormData(
+                adminToEdit || {
+                    name: "",
+                    email: "",
+                    role: "",
+                }
+            );
         }
     }, [id, admins]);
 
+    // Handle form input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.name || !formData.email || !formData.role || !formData.status) {
+
+        // Validate all fields are filled
+        if (!formData.name || !formData.email || !formData.role) {
             alert("All fields are required!");
             return;
         }
 
-        setAdmins((prevAdmins) =>
-            prevAdmins.map((admin) => (admin.id === parseInt(id) ? formData : admin))
-        );
-        alert("Admin details updated successfully!");
-        navigate("/admin/accounts");
+        try {
+            // Send a PUT request to the backend to update the admin details
+            const response = await axios.put(
+                `http://localhost:5000/api/admins/${id}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
+            );
+
+            // Update the admin list in the frontend after successful update
+            setAdmins((prevAdmins) =>
+                prevAdmins.map((admin) =>
+                    admin._id === id ? response.data : admin
+                )
+            );
+
+            alert("Admin details updated successfully!");
+            navigate("/admin/accounts");
+        } catch (error) {
+            console.error("Error updating admin details:", error);
+            alert("Failed to update admin details. Please try again.");
+        }
     };
 
     return (
@@ -70,14 +106,6 @@ const EditAdmin = ({ admins, setAdmins }) => {
                         onChange={handleInputChange}
                         required
                     />
-                    <input
-                        type="text"
-                        name="status"
-                        placeholder="Status"
-                        value={formData.status}
-                        onChange={handleInputChange}
-                        required
-                    />
                     <motion.button
                         type="submit"
                         className="submit-button"
@@ -91,4 +119,4 @@ const EditAdmin = ({ admins, setAdmins }) => {
     );
 };
 
-export default EditAdmin;
+export default EditAccount;

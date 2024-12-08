@@ -87,3 +87,64 @@
     background-color: #c82333;
     transform: scale(1.05);
 }
+
+@media screen and (max-width: 768px) {
+    .list-title {
+        font-size: 1.5rem;
+    }
+
+    
+
+    .add-schedule-button {
+        padding: 8px 12px;
+        width: 100%;
+    }
+
+    .edit-button, .delete-button {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+
+    .bus-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap; /* Enables horizontal scrolling */
+    }
+
+    .bus-table th,
+    .bus-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .schedule-list {
+        padding: 20px;
+    }
+
+    .add-schedule-button {
+        padding: 6px 12px;
+    }
+
+    .list-title {
+        font-size: 1.2rem;
+    }
+
+    .bus-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap; /* Enables horizontal scrolling */
+    }
+
+    .bus-table th,
+    .bus-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .edit-button, .delete-button {
+        padding: 5px;
+    }
+}

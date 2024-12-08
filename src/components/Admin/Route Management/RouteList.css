@@ -14,7 +14,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin: 10px auto 30px;
-    max-width: 90%; /* Adjust width to 90% for more flexibility on small screens */
+    max-width: 90%;
     box-sizing: border-box;
 }
 
@@ -25,6 +25,63 @@ body {
     color: #333;
 }
 
+/* Google Maps Section */
+.map-container {
+    background-color: #80c9eb;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    text-align: center;
+    margin-left: 50px;
+}
+
+.location-input {
+    width: 250px;
+    padding: 10px;
+    margin: 5px 5px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.calculate-button {
+    background-color: #565a5e;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.calculate-button:hover {
+    background-color: #00bcd4;
+    transform: scale(1.05);
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.map-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.map-container h3 {
+    font-size: 1rem;
+    margin: 10px 0;
+    color: #555;
+}
+
+/* Add Route Button */
 .add-route-button {
     display: block;
     margin: 0 auto 20px;
@@ -35,8 +92,8 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    width: 100%; /* Full width for button */
-    max-width: 200px; /* Limit width for larger screens */
+    width: 100%;
+    max-width: 200px;
 }
 
 .add-route-button:hover {
@@ -45,37 +102,6 @@ body {
 }
 
 /* Table Styles */
-.route-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-.route-table th,
-.route-table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.route-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-}
-
-.edit-button,
-.delete-button {
-    padding: 5px 10px;
-    margin-right: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
 .route-table {
     width: 100%;
     border-collapse: collapse;
@@ -112,7 +138,6 @@ body {
     border: 1px solid #ccc;
     cursor: pointer;
     border-radius: 5px;
-
 }
 
 .page-button.active {
@@ -124,7 +149,15 @@ body {
     background-color: #ddd;
 }
 
-
+.edit-button,
+.delete-button {
+    padding: 5px 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
 .edit-button {
     background-color: #28a745;
@@ -157,11 +190,40 @@ body {
         font-size: 1.8rem;
     }
 
-    .route-table th, .route-table td {
+    .route-table th,
+    .route-table td {
         padding: 10px;
     }
 
     .add-route-button {
+        padding: 8px 16px;
+    }
+
+    .map-container h2 {
+        font-size: 1.2rem;
+    }
+
+    .location-input {
+        width: 100%;
+    }
+}
+
+/* Media Queries for Responsiveness */
+@media screen and (max-width: 1024px) {
+    .schedule-list {
+        padding: 30px;
+        max-width: 90%;
+    }
+
+    .list-title {
+        font-size: 1.8rem;
+    }
+
+    .bus-table th, .bus-table td {
+        padding: 50px;
+    }
+
+    .add-bus-button {
         padding: 8px 16px;
     }
 }
@@ -174,7 +236,7 @@ body {
     .route-table {
         display: block;
         overflow-x: auto;
-        white-space: nowrap; /* Enables horizontal scrolling */
+        white-space: nowrap;
     }
 
     .route-table th,
@@ -188,13 +250,31 @@ body {
         width: 100%;
     }
 
-    .edit-button, .delete-button {
+    .edit-button,
+    .delete-button {
         width: 100%;
         margin-bottom: 10px;
         padding: 10px;
     }
 
-    .route-table th, .route-table td {
+    .map-container {
+        padding: 10px;
+        margin-left: 20px;
+    }
+
+    .map-container h2 {
+        font-size: 1.2rem;
+    }
+
+    .map-container h3 {
+        font-size: 0.9rem;
+    }
+    .location-input {
+        width: 250px;
+        padding: 10px;
+        margin: 5px 5px 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
         font-size: 14px;
     }
 }
@@ -215,7 +295,7 @@ body {
     .route-table {
         display: block;
         overflow-x: auto;
-        white-space: nowrap; /* Enables horizontal scrolling */
+        white-space: nowrap;
     }
 
     .route-table th,
@@ -224,7 +304,24 @@ body {
         font-size: 14px;
     }
 
-    .edit-button, .delete-button {
+    .edit-button,
+    .delete-button {
         padding: 5px;
+    }
+
+    .map-container h2 {
+        font-size: 1rem;
+    }
+
+    .map-container h3 {
+        font-size: 0.8rem;
+    }
+    .location-input {
+        width: 150px;
+        padding: 10px;
+        margin: 5px 5px 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 12px;
     }
 }

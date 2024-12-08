@@ -9,6 +9,11 @@ const RouteList = ({ routes, setRoutes }) => {
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1); // Track current page
     const [routesPerPage] = useState(10); // Number of routes to display per page
+    const [mapLoaded, setMapLoaded] = useState(false); // Track map script loading status
+    const [start, setStart] = useState('');
+    const [end, setEnd] = useState('');
+    const [distance, setDistance] = useState(null);
+    const [duration, setDuration] = useState(null);
     const navigate = useNavigate();
 
     // Function to verify if the token exists in localStorage
@@ -22,7 +27,27 @@ const RouteList = ({ routes, setRoutes }) => {
         return true;
     };
 
+    // Load Google Maps API script
+    const loadGoogleMapsScript = () => {
+        const script = document.createElement("script");
+        script.src = `https://maps.gomaps.pro/maps/api/js?key=AlzaSyPlDwvRkAgKMtu-4fei2G4dolwkZVRpbMU&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    };
+
     useEffect(() => {
+        loadGoogleMapsScript();
+        window.initMap = () => {
+            // Initialize the map with Islamabad as the default center
+            const map = new window.google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: { lat: 33.6844, lng: 73.0479 }, // Coordinates for Islamabad
+            });
+            setMapLoaded(true);
+            console.log("Google Maps API loaded with default location Islamabad");
+        };
+    
         if (verifyToken()) {
             const fetchRoutes = async () => {
                 if (!routes || routes.length === 0) {
@@ -43,13 +68,50 @@ const RouteList = ({ routes, setRoutes }) => {
                     }
                 }
             };
-
+    
             fetchRoutes();
         }
     }, [routes, setRoutes, navigate]);
+    
+    // Handle calculating the distance and duration
+    const calculateRoute = () => {
+        if (start && end && window.google && mapLoaded) {
+            const directionsService = new window.google.maps.DirectionsService();
+            const directionsRenderer = new window.google.maps.DirectionsRenderer();
+    
+            const map = new window.google.maps.Map(document.getElementById("map"), {
+                zoom: 7,
+                center: { lat: 33.6844, lng: 73.0479 }, // Coordinates for Islamabad
+            });
+    
+            directionsRenderer.setMap(map);
+    
+            const request = {
+                origin: start,
+                destination: end,
+                travelMode: window.google.maps.TravelMode.DRIVING,
+            };
+    
+            directionsService.route(request, (result, status) => {
+                if (status === window.google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(result);
+                    setDistance(result.routes[0].legs[0].distance.text);
+                    setDuration(result.routes[0].legs[0].duration.text);
+                } else {
+                    alert("Could not calculate the route.");
+                }
+            });
+        } else if (mapLoaded) {
+            // If start and end are not provided, show map of Islamabad
+            const map = new window.google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: { lat: 33.6844, lng: 73.0479 }, // Coordinates for Islamabad
+            });
+        }
+    };
 
     const deleteRoute = async (id) => {
-        if (!verifyToken()) { 
+        if (!verifyToken()) {
             return; // Verify token before deleting
         }
         try {
@@ -88,6 +150,39 @@ const RouteList = ({ routes, setRoutes }) => {
         <div className="home-container">
             <h1 className="dashboard-title">Bus Routes</h1>
             <div className="home-header"></div>
+            
+            {/* Google Maps Section */}
+            <div className="map-container">
+                <h2>Check Route Distance</h2>
+                <input
+                    type="text"
+                    value={start}
+                    onChange={(e) => setStart(e.target.value)}
+                    placeholder="Enter Start Location"
+                    className="location-input"
+                />
+                <input
+                    type="text"
+                    value={end}
+                    onChange={(e) => setEnd(e.target.value)}
+                    placeholder="Enter End Location"
+                    className="location-input"
+                />
+                <br>
+                </br>
+                <button onClick={calculateRoute} className="calculate-button">
+                    Calculate Route
+                </button>
+                <div id="map" style={{ height: "400px", width: "100%" }}></div>
+                {distance && (
+                    <div>
+                        <h3>Distance: {distance}</h3>
+                        <h3>Duration: {duration}</h3>
+                    </div>
+                )}
+            </div>
+
+            {/* Route List Section */}
             <div className="route-list">
                 <h1 className="list-title">Route Details</h1>
                 {routes.length === 0 ? (

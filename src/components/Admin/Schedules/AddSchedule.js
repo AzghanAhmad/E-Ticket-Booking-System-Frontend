@@ -66,8 +66,8 @@ const AddSchedule = ({ setSchedules }) => {
                 departureTime: new Date(formData.departureTime).toISOString(),
                 arrivalTime: new Date(formData.arrivalTime).toISOString(),
                 status: formData.status,
-                route: { start, end },
-                bus: { licensePlate: formData.bus },
+                route: formData.route,
+                bus: formData.bus,
             };
 
             const response = await axios.post("http://localhost:5000/api/schedules", newSchedule);
@@ -132,10 +132,7 @@ const AddSchedule = ({ setSchedules }) => {
                         </option>
                         {routeList.length > 0 ? (
                             routeList.map((route) => (
-                                <option
-                                    key={route._id}
-                                    value={`${route.start} to ${route.end}`}
-                                >
+                                <option key={route._id} value={route._id}>
                                     {route.start} to {route.end}
                                 </option>
                             ))
@@ -150,18 +147,14 @@ const AddSchedule = ({ setSchedules }) => {
                         onChange={handleInputChange}
                         required
                     >
-                        <option value="" disabled>
-                            Select Bus License
+                         <option value="" disabled>
+                            Select Bus
                         </option>
-                        {busList.length > 0 ? (
-                            busList.map((bus) => (
-                                <option key={bus._id} value={bus.licensePlate}>
-                                    {bus.licensePlate}
-                                </option>
-                            ))
-                        ) : (
-                            <option disabled>Loading buses...</option>
-                        )}
+                        {busList.map((bus) => (
+                            <option key={bus._id} value={bus._id}>
+                                {bus.licensePlate}
+                            </option>
+                        ))}
                     </select>
                     <motion.button
                         type="submit"

@@ -4,9 +4,9 @@ import axios from "axios";
 
 // Import components
 import AdminDashboard from "../components/Admin/Dashboard/AdminDashboard";
-import AdminList from "../components/Admin/Account Management/AdminList";
-import AddAdmin from "../components/Admin/Account Management/AddAdmin";
-import EditAdmin from "../components/Admin/Account Management/EditAdmin";
+import AdminList from "../components/Admin/Account Management/AccountList";
+import AddAdmin from "../components/Admin/Account Management/AddAccount";
+import EditAdmin from "../components/Admin/Account Management/EditAccount";
 import RouteList from "../components/Admin/Route Management/RouteList";
 import AddRoute from "../components/Admin/Route Management/AddRoute";
 import EditRoute from "../components/Admin/Route Management/EditRoute";
@@ -22,6 +22,8 @@ import EditDriver from "../components/Admin/Driver Management/EditDriver";
 import FareList from "../components/Admin/Fare Management/FareList";
 import AddFare from "../components/Admin/Fare Management/AddFare";
 import EditFare from "../components/Admin/Fare Management/EditFare";
+import BookingManagement from "../components/Admin/Booking Management/BookingManagement";
+import RefundManagement from "../components/Admin/Refund Management/RefundManagement";
 
 const AdminRoutes = () => {
 
@@ -68,6 +70,10 @@ const AdminRoutes = () => {
             <Route path="/accounts" element={<AdminList admins={admins} setAdmins={setAdmins} />} />
             <Route path="/accounts/add" element={<AddAdmin admins={admins} setAdmins={setAdmins} />} />
             <Route path="/accounts/edit/:id" element={<EditAdmin admins={admins} setAdmins={setAdmins} />} />
+
+            <Route path="/refunds" element={<RefundManagement />} />
+            <Route path="/bookings" element={<BookingManagement />} />
+            
 
             {/* Route Management */}
             <Route path="/routes" element={<RouteList routes={routes} setRoutes={setRoutes} />} />

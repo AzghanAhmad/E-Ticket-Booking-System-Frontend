@@ -121,8 +121,16 @@ body {
         font-size: 1.5rem; /* Adjust title font size for smaller screens */
     }
 
-    .admin-table th, .admin-table td {
-        padding: 8px; /* Smaller padding for mobile screens */
+    .admin-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px;
+        font-size: 14px;
     }
 
     .add-button {
@@ -158,8 +166,16 @@ body {
         font-size: 1.2rem; /* Adjust title size for extra small screens */
     }
 
-    .admin-table th, .admin-table td {
-        padding: 1px; /* Further reduce padding for better fitting */
+    .admin-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px;
+        font-size: 14px;
     }
 
     .edit-button, .delete-button {
