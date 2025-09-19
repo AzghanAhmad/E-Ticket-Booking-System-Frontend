@@ -78,5 +78,5 @@ from the owner.
 
 ## 👤 Author
 **Azghan Ahmad**  
-- GitHub: [yourusername](https://github.com/AzghanAhmad)  
+- GitHub: [AzghanAhmad](https://github.com/AzghanAhmad)  
 - Email: azghanduplicate786@gmail.com
