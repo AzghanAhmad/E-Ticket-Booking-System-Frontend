@@ -1,70 +1,82 @@
-# Getting Started with Create React App
+# 🎟️ E-Ticket Booking System (Frontend)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the **frontend** of the **E-Ticket Booking System** application, built with the **MERN stack**.  
+It provides the user interface where customers can book tickets and admins can manage bookings.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Tech Stack
+- **React 18** – UI framework  
+- **React Router** – Navigation  
+- **Axios / Fetch** – API communication  
+- **Tailwind CSS** – Styling  
+- **Context API / Redux (if used)** – State management  
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📂 Project Structure
+```
+/frontend
+│── /public       # Static files
+│── /src
+│   │── /components   # Reusable components
+│   │── /pages        # Page-level components (Home, Login, Booking, etc.)
+│   │── /assets       # Images, icons
+│   │── App.js        # Main app entry
+│   │── index.js      # React DOM entry
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## ⚙️ Features
+- 🔑 Secure **Login & Signup** with role selection (User/Admin)  
+- 🎫 **Ticket Booking** and confirmation  
+- 📋 **View Bookings & History**  
+- 🛠️ **Admin Dashboard** to manage users and tickets  
+- 📱 Fully **responsive design** for desktop and mobile  
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🖥️ Setup & Installation
+1. Clone the repository:
+   https://github.com/AzghanAhmad/E-Ticket-Booking-System-Frontend.git
+   
+2. Navigate to the frontend folder:
+   cd e-ticket-booking-system/app/frontend
+   
+3. Install dependencies:
+   npm install
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. Start the development server:
+   npm start
+   The app should now be running at **http://localhost:3000**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📡 Backend Connection
+The frontend communicates with the backend API (Node.js + Express + MongoDB).  
+Make sure the backend is running and update the API base URL in your config if needed.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 📜 License
+```
+Copyright (c) 2025 Azghan Ahmad
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+All Rights Reserved.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+This repository contains the source code for the "E-Ticket Booking System" application.  
+All rights to this project, including but not limited to source code, design, and documentation,  
+are owned by the project owner.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Unauthorized copying, modification, distribution, or use of this project,  
+in whole or in part, is strictly prohibited without prior written permission  
+from the owner.
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 👤 Author
+**Azghan Ahmad**  
+- GitHub: [yourusername](https://github.com/AzghanAhmad)  
+- Email: azghanduplicate786@gmail.com
