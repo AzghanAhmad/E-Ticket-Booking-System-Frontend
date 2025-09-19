@@ -30,7 +30,7 @@ const RouteList = ({ routes, setRoutes }) => {
     // Load Google Maps API script
     const loadGoogleMapsScript = () => {
         const script = document.createElement("script");
-        script.src = `https://maps.gomaps.pro/maps/api/js?key=AlzaSyPlDwvRkAgKMtu-4fei2G4dolwkZVRpbMU&callback=initMap`;
+        script.src = `https://maps.gomaps.pro/maps/api/js?key=AlzaSywGfIh52dmZ-iKloLft3qFAFidQpJtYPqA&callback=initMap`;
         script.async = true;
         script.defer = true;
         document.head.appendChild(script);
